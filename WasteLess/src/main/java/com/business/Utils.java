@@ -205,12 +205,20 @@ public class Utils {
 		
 		while(it.hasNext()) {
 			Item currItem = it.next();
-			if(currItem.getExpiration().compareTo(new Date(System.currentTimeMillis())) < 0) {
+			if(currItem.getExpiration().compareTo(new Date(System.currentTimeMillis() + 86400000 * 2)) < 0 && currItem.getExpiration().compareTo(new Date(System.currentTimeMillis())) > 0) {
+				Notification newNotification = new Notification();
+				newNotification.setMessage("Item " + currItem.getName() + " is about to expire!");
+				Notification newNotification2 = new Notification();
+				newNotification2.setMessage("Please consider donating " + currItem.getName());
+				notRep.save(newNotification);
+				notRep.save(newNotification2);
+			}
+			else if(currItem.getExpiration().compareTo(new Date(System.currentTimeMillis())) < 0){
 				Notification newNotification = new Notification();
 				newNotification.setMessage("Item " + currItem.getName() + " has expired!");
 				notRep.save(newNotification);
 			}
-			totalDailyCalories += Utils.this.getIdealBurndownRatio(currItem);
+			else totalDailyCalories += Utils.this.getIdealBurndownRatio(currItem);
 		}
 		
 		if(this.calorieGoal < totalDailyCalories) {
